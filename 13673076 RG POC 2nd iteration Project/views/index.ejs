@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Tracking</title>
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/css/uikit.min.css" />
+    <!-- UIkit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/js/uikit-icons.min.js"></script>
+
+</head>
+
+<body>
+
+    <div class="uk-section">
+        <h1 class="uk-text-bold uk-heading-large uk-flex-center uk-align-center" style="text-align: center;">EMOTION
+            SNAPSHOT</h1>
+        <div class="uk-height-medium uk-height-max-large uk-flex uk-flex-center uk-flex-middle uk-background-cover uk-dark uk-contain"
+            data-src="./imgs/vecteezy_emoticon-emotion-icon-vector-line-on-white-background-image_3756149.jpg" uk-img>
+        </div>
+        <div class="uk-container">
+        </div>
+
+        <% if (loggedin) { %>
+
+            <style>
+                .uk-navbar-container {
+                    width: 100vw;
+                    /* Set the width to 100% of the viewport width */
+                    position: relative;
+                    /* Ensure the navbar stays within the viewport */
+                    background-color: rgba(144, 238, 144, 0.2);
+                    /* Light green with 50% opacity */
+                }
+            </style>
+
+            <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar style="padding-left: 60px;">
+                <div class="uk-navbar-left">
+                    <ul class="uk-navbar-nav">
+                        <li class="uk-active"><a href="/" style="font-size: 20px; font-weight: bold;">Homepage</a></li>
+                        <li class="uk-parent"><a href="/summarychart" style="font-size: 20px; font-weight: bold;">Visual
+                                Summary</a></li>
+                        <li class="uk-parent"><a href="/new" style="font-size: 20px; font-weight: bold;">Add New
+                                Snapshot </a></li>
+                    </ul>
+                </div>
+                <div class="uk-navbar-right" uk-navbar style="padding-left: 60px; padding-right: 120px;">
+                    <ul class="uk-navbar-nav">
+                        <li class="uk-parent"><a href="/userdetails" style="font-size: 20px; font-weight: bold;">Update Details</a> </li>
+                        <li class="uk-parent"><a href="/logout" style="font-size: 20px; font-weight: bold;">Logout</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="uk-section uk-background-muted">
+                <div class="uk-container">
+
+                    <h2 class="uk-heading-small uk-text-left">
+                        <%= `${user.name}'s Snapshot Summary `%>
+                    </h2>
+
+                    <div class="uk-child-width-1-2@s uk-grid-match" uk-grid>
+                        <% const dateformat={ weekday: 'long' , year: 'numeric' , month: 'long' , day: 'numeric' ,
+                            hour: 'numeric' , minute: 'numeric' }; %>
+                            <% summary.forEach((row)=> { %>
+                                <% var summaryid=row.emotion_snapshot_id; %>
+                                    <div>
+                                        <div class="uk-card uk-card-body uk-card-default uk-link-toggle"
+                                            style="display: flex; flex-direction: column; align-items: center;">
+                                            <a href='/edit/<%= summaryid %>'
+                                                class='uk-display-block uk-card uk-card-body uk-card-default uk-link-toggle'>
+                                                <% var rawdate=new Date(row.timestamp); %>
+                                                    <% var itemdate=new Intl.DateTimeFormat('en-GB',
+                                                        dateformat).format(rawdate); %>
+                                                        <h3 class='uk-card-title'><span class='uk-link-heading'>
+                                                                <%= itemdate %>
+                                                            </span></h3>
+
+                                                        <ul class="uk-list-circle" style="align-items: left;">
+                                                            <li
+                                                                style="display: flex; justify-content: flex-start; align-items: left;">
+                                                                <span style="margin-right: 10px;">Today's Enjoyment
+                                                                    Level:</span>
+                                                                <p
+                                                                    style="font-weight: bold; font-size: 18px; text-align: right; margin: 0; margin-left: auto; margin-right: 50px;">
+                                                                    <%= row.enjoyment_level %>
+                                                                </p>
+                                                            </li>
+                                                            <li
+                                                                style="display: flex; justify-content: flex-start; align-items: left;">
+                                                                <span style="margin-right: 10px;">Today's Sadness
+                                                                    Level:</span>
+                                                                <p
+                                                                    style="font-weight: bold; font-size: 18px; text-align: right; margin: 0; margin-left: auto; margin-right: 50px;">
+                                                                    <%= row.sadness_level %>
+                                                                </p>
+                                                            </li>
+                                                            <li
+                                                                style="display: flex; justify-content: flex-start; align-items: left;">
+                                                                <span style="margin-right: 10px;">Today's Anger
+                                                                    Level:</span>
+                                                                <p
+                                                                    style="font-weight: bold; font-size: 18px; text-align: right; margin: 0; margin-left: auto; margin-right: 50px;">
+                                                                    <%= row.anger_level %>
+                                                                </p>
+                                                            </li>
+                                                            <li
+                                                                style="display: flex; justify-content: flex-start; align-items: left;">
+                                                                <span style="margin-right: 10px;">Today's Disgust
+                                                                    Level:</span>
+                                                                <p
+                                                                    style="font-weight: bold; font-size: 18px; text-align: right; margin: 0; margin-left: auto; margin-right: 50px;">
+                                                                    <%= row.disgust_level %>
+                                                                </p>
+                                                            </li>
+                                                            <li
+                                                                style="display: flex; justify-content: flex-start; align-items: left;">
+                                                                <span style="margin-right: 10px;">Today's Fear
+                                                                    Level:</span>
+                                                                <p
+                                                                    style="font-weight: bold; font-size: 18px; text-align: right; margin: 0; margin-left: auto; margin-right: 50px;">
+                                                                    <%= row.fear_level %>
+                                                                </p>
+                                                            </li>
+                                                            <li
+                                                                style="display: flex; justify-content: flex-start; align-items: left;">
+                                                                <span style="margin-right: 10px;">Today's Surprise
+                                                                    Level:</span>
+                                                                <p
+                                                                    style="font-weight: bold; font-size: 18px; text-align: right; margin: 0; margin-left: auto; margin-right: 50px;">
+                                                                    <%= row.surprise_level %>
+                                                                </p>
+                                                            </li>
+                                                        </ul>
+                                                        <ul style="text-align: center-left; font-style: italic;">Today's
+                                                            Emotional Triggers:</ul>
+                                                        <% if (row.list_contextual_trigger !==null) { %>
+                                                            <ul
+                                                                style="font-weight: bold; font-size: 18px; text-align: center;">
+                                                                <%= row.list_contextual_trigger %>
+                                                            </ul>
+                                                            <% } else { %>
+                                                                <p> (No pre-determined triggers selected today)</p>
+                                                                <% } %>
+                                                                    </ul>
+                                                                    <ul
+                                                                        style="text-align: center-left; font-style: italic;">
+                                                                        Thoughts of the Day....</ul>
+                                                                    <% if (row.contextual_trigger !==undefined &&
+                                                                        row.contextual_trigger !==null &&
+                                                                        row.contextual_trigger.trim() !=='' ) { %>
+                                                                        <p
+                                                                            style="font-weight: bold; font-size: 20px; color:darkcyan; font-style: italic; text-align: center;">
+                                                                            <%= row.contextual_trigger %>
+                                                                        </p>
+                                                                        <% } else { %>
+                                                                            <p
+                                                                                style="font-size: 12px; text-align: center;">
+                                                                                (No additional thoughts today...)</p>
+                                                                            <% } %>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <% }); %>
+                    </div>
+
+                    <% } else { %>
+
+                        <style>
+                            .uk-navbar-container {
+                                width: 100vw;
+                                /* Set the width to 100% of the viewport width */
+                                position: relative;
+                                /* Ensure the navbar stays within the viewport */
+                                background-color: rgba(144, 238, 144, 0.2);
+                                /* Light green with 50% opacity */
+                            }
+                        </style>
+
+                        <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar
+                            style="padding-left: 60px; padding-right: 60px;">
+                            <ul class="uk-navbar-nav">
+                                <li class="uk-active"><a href="/login"
+                                        style="font-size: 20px; font-weight: bold;">Login</a></li>
+                                <li class="uk-active"><a href="/signup" style="font-size: 20px; font-weight: bold;">Sign
+                                        Up</a></li>
+                            </ul>
+                        </nav>
+
+                        <h2 class="uk-link-muted uk-heading-small uk-text-center">Please <a href="/signup">sign up</a>
+                            or <a href="/login">log in</a> to start</h2>
+                        <h4 class="uk-heading-small uk-text-center" style="font-size: 40px; font-weight: bold;">If you
+                            sign up today, you will be able to access all these features: </h4>
+
+                        <ul class="uk-list uk-list-large uk-list-striped uk-text-center uk-text-large">
+                            <li>Log your emotions with contextual triggers to create an emotion snapshot</li>
+                            <li>You can make entries multiple times a day, and log additional thoughts/feelings as well
+                                as link with contextual triggers </li>
+                            <li>You can view the snapshots as graphics to help visualize and identify patterns - both
+                                the individual snapshots themselves, but also a summary of the snapshots and contextual
+                                triggers</li>
+                            <li>Snapshots can be amended, updated and/or deleted </li>
+                        </ul>
+
+                        <div class="uk-section uk-background-muted">
+                            <div class="uk-container">
+                                <div class="uk-child-width-1-2@s uk-grid-match" uk-grid>
+                                    <div>
+                                        <div class="uk-card uk-card-body uk-card-default uk-link-toggle"
+                                            style="display: flex; flex-direction: column; align-items: center; width: 100%">
+                                            <a href='/signup'
+                                                class='uk-display-block uk-card uk-card-body uk-card-default uk-link-toggle'>
+                                                <h3 class='uk-card-title'><span class='uk-link-heading'>SAMPLE SNAPSHOT
+                                                        Thursday, 21 December 2023 at 15:03:00</span></h3>
+
+                                                <ul class="uk-list-circle" style="align-items: left;">
+                                                    <li
+                                                        style="display: flex; justify-content: flex-start; align-items: left;">
+                                                        <span style="margin-right: 10px;">Today's Enjoyment
+                                                            Level:</span>
+                                                        <p
+                                                            style="font-weight: bold; font-size: 18px; text-align: right; margin: 0; margin-left: auto; margin-right: 50px;">
+                                                            8</p>
+                                                    </li>
+                                                    <li
+                                                        style="display: flex; justify-content: flex-start; align-items: left;">
+                                                        <span style="margin-right: 10px;">Today's Sadness Level:</span>
+                                                        <p
+                                                            style="font-weight: bold; font-size: 18px; text-align: right; margin: 0; margin-left: auto; margin-right: 50px;">
+                                                            2</p>
+                                                    </li>
+                                                    <li
+                                                        style="display: flex; justify-content: flex-start; align-items: left;">
+                                                        <span style="margin-right: 10px;">Today's Anger Level:</span>
+                                                        <p
+                                                            style="font-weight: bold; font-size: 18px; text-align: right; margin: 0; margin-left: auto; margin-right: 50px;">
+                                                            1</p>
+                                                    </li>
+                                                    <li
+                                                        style="display: flex; justify-content: flex-start; align-items: left;">
+                                                        <span style="margin-right: 10px;">Today's Disgust Level:</span>
+                                                        <p
+                                                            style="font-weight: bold; font-size: 18px; text-align: right; margin: 0; margin-left: auto; margin-right: 50px;">
+                                                            1</p>
+                                                    </li>
+                                                    <li
+                                                        style="display: flex; justify-content: flex-start; align-items: left;">
+                                                        <span style="margin-right: 10px;">Today's Fear Level:</span>
+                                                        <p
+                                                            style="font-weight: bold; font-size: 18px; text-align: right; margin: 0; margin-left: auto; margin-right: 50px;">
+                                                            3</p>
+                                                    </li>
+                                                    <li
+                                                        style="display: flex; justify-content: flex-start; align-items: left;">
+                                                        <span style="margin-right: 10px;">Today's Surprise Level:</span>
+                                                        <p
+                                                            style="font-weight: bold; font-size: 18px; text-align: right; margin: 0; margin-left: auto; margin-right: 50px;">
+                                                            6</p>
+                                                    </li>
+                                                </ul>
+                                                <ul style="text-align: center-left; font-style: italic;">Today's
+                                                    Emotional Triggers:</ul>
+                                                <ul style="font-weight: bold; font-size: 18px; text-align: center;">
+                                                    Family Work</ul>
+                                                </ul>
+                                                <ul style="text-align: center-left; font-style: italic;">Thoughts of the
+                                                    Day....</ul>
+                                                <p
+                                                    style="font-weight: bold; font-size: 20px; color:darkcyan; font-style: italic; text-align: center;">
+                                                    Surprise party in work today which was a lot of fun</p>
+                                            </a>
+                                        </div>
+                                    </div>
+
+
+                                    <div>
+                                        <div class="uk-card uk-card-body uk-card-default uk-link-toggle"
+                                            style="display: flex; flex-direction: column; align-items: center; width: 100%">
+                                            <a href='/signup'
+                                                class='uk-display-block uk-card uk-card-body uk-card-default uk-link-toggle'>
+                                                <h3 class='uk-card-title'><span class='uk-link-heading'>SAMPLE SNAPSHOT
+                                                        Thursday, 21 December 2023 at 15:03:00</span></h3>
+
+                                                <ul class="uk-list-circle" style="align-items: left;">
+                                                    <li
+                                                        style="display: flex; justify-content: flex-start; align-items: left;">
+                                                        <span style="margin-right: 10px;">Today's Enjoyment
+                                                            Level:</span>
+                                                        <p
+                                                            style="font-weight: bold; font-size: 18px; text-align: right; margin: 0; margin-left: auto; margin-right: 50px;">
+                                                            9</p>
+                                                    </li>
+                                                    <li
+                                                        style="display: flex; justify-content: flex-start; align-items: left;">
+                                                        <span style="margin-right: 10px;">Today's Sadness Level:</span>
+                                                        <p
+                                                            style="font-weight: bold; font-size: 18px; text-align: right; margin: 0; margin-left: auto; margin-right: 50px;">
+                                                            0</p>
+                                                    </li>
+                                                    <li
+                                                        style="display: flex; justify-content: flex-start; align-items: left;">
+                                                        <span style="margin-right: 10px;">Today's Anger Level:</span>
+                                                        <p
+                                                            style="font-weight: bold; font-size: 18px; text-align: right; margin: 0; margin-left: auto; margin-right: 50px;">
+                                                            1</p>
+                                                    </li>
+                                                    <li
+                                                        style="display: flex; justify-content: flex-start; align-items: left;">
+                                                        <span style="margin-right: 10px;">Today's Disgust Level:</span>
+                                                        <p
+                                                            style="font-weight: bold; font-size: 18px; text-align: right; margin: 0; margin-left: auto; margin-right: 50px;">
+                                                            1</p>
+                                                    </li>
+                                                    <li
+                                                        style="display: flex; justify-content: flex-start; align-items: left;">
+                                                        <span style="margin-right: 10px;">Today's Fear Level:</span>
+                                                        <p
+                                                            style="font-weight: bold; font-size: 18px; text-align: right; margin: 0; margin-left: auto; margin-right: 50px;">
+                                                            0</p>
+                                                    </li>
+                                                    <li
+                                                        style="display: flex; justify-content: flex-start; align-items: left;">
+                                                        <span style="margin-right: 10px;">Today's Surprise Level:</span>
+                                                        <p
+                                                            style="font-weight: bold; font-size: 18px; text-align: right; margin: 0; margin-left: auto; margin-right: 50px;">
+                                                            6</p>
+                                                    </li>
+                                                </ul>
+                                                <ul style="text-align: center-left; font-style: italic;">Today's
+                                                    Emotional Triggers:</ul>
+                                                <ul style="font-weight: bold; font-size: 18px; text-align: center;">
+                                                    Social Interaction, Family </ul>
+                                                </ul>
+                                                <ul style="text-align: center-left; font-style: italic;">Thoughts of the
+                                                    Day....</ul>
+                                                <p
+                                                    style="font-weight: bold; font-size: 20px; color:darkcyan; font-style: italic; text-align: center;">
+                                                    Surprise party in work today which was a lot of fun</p>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <% } %>
+                            </div>
+                        </div>
+
+
+</body>
+
+</html>

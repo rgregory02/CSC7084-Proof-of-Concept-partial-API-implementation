@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Tracking</title>
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/css/uikit.min.css" />
+    <!-- UIkit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/js/uikit-icons.min.js"></script>
+</head>
+
+<body>
+
+    <div class="uk-section">
+        <h1 class="uk-text-bold uk-heading-large uk-flex-center uk-align-center" style="text-align: center;">EMOTION
+            SNAPSHOT</h1>
+        <div class="uk-height-medium uk-height-max-large uk-flex uk-flex-center uk-flex-middle uk-background-cover uk-dark uk-contain"
+            data-src="./imgs/vecteezy_emoticon-emotion-icon-vector-line-on-white-background-image_3756149.jpg" uk-img>
+        </div>
+        <div class="uk-container">
+        </div>
+
+        <style>
+            .uk-navbar-container {
+                width: 100vw;
+                /* Set the width to 100% of the viewport width */
+                position: relative;
+                /* Ensure the navbar stays within the viewport */
+                background-color: rgba(144, 238, 144, 0.2);
+                /* Light green with 50% opacity */
+            }
+        </style>
+
+        <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar style="padding-left: 60px;">
+            <div class="uk-navbar-left">
+                <ul class="uk-navbar-nav">
+                    <li class="uk-active"><a href="/" style="font-size: 20px; font-weight: bold;">Return to Homepage</a>
+                    </li>
+                    <li class="uk-parent"><a href="/summarychart" style="font-size: 20px; font-weight: bold;">Visual
+                            Summary</a></li>
+                </ul>
+            </div>
+            <div class="uk-navbar-right" uk-navbar style="padding-left: 60px; padding-right: 120px;">
+                <ul class="uk-navbar-nav">
+                    <li class="uk-parent"><a href="/userdetails" style="font-size: 20px; font-weight: bold;">Update Details</a> </li>
+                    <li class="uk-parent"><a href="/logout" style="font-size: 20px; font-weight: bold;">Logout</a></li>
+                </ul>
+            </div>
+        </nav>
+
+
+
+        <div class="uk-section uk-background-muted">
+            <div class="uk-container">
+                <h2 class="uk-heading-small uk-text-left"> Add Snapshot </h2>
+
+                <style>
+                    .uk-grid-small {
+                        font-size: large;
+                        position: relative;
+                        /* Ensure the navbar stays within the viewport */
+                        background-color: rgba(0, 160, 0, 0.2);
+                        /* Light green with 20% opacity */
+                    }
+                </style>
+
+                <form method="post" action="/new/" class="uk-grid-small" uk-grid>
+
+                    <div class="uk-width-3-4@s" style="margin-top: 40px;">
+                        <label for="slider1" style="font-weight: bold; font-size: x-large;">What is your level of
+                            enjoyment at this moment? </label>
+                        <input class="uk-input" name="enjoyment_level" type="range" id="slider1" min="0" max="10"
+                            step="1" value="5" required>
+                        <span>Min: </span>
+                        <span class="minValue">0</span>
+                        <span>Max: </span>
+                        <span class="maxValue">10</span>
+                        <div style="text-align: right;">
+                            <span
+                                style="font-weight: bold; display: inline-block; font-size: larger; color: darkgreen;">Current
+                                Enjoyment: </span>
+                            <span class="currentValue"
+                                style="font-weight: bold; display: inline-block; font-size: xx-large; color: darkgreen;">5</span>
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="uk-width-3-4@s">
+                        <label for="slider2" style="font-weight: bold; font-size: x-large;">What is your level of
+                            sadness at this moment? </label>
+                        <input class="uk-input" name="sadness_level" type="range" id="slider2" min="0" max="10" step="1"
+                            value="5" required>
+                        <span>Min: </span>
+                        <span class="minValue">0</span>
+                        <span>Max: </span>
+                        <span class="maxValue">10</span>
+                        <div style="text-align: right;">
+                            <span
+                                style="font-weight: bold; display: inline-block; font-size: larger; color: darkgreen;">Current
+                                Sadness: </span>
+                            <span class="currentValue"
+                                style="font-weight: bold; display: inline-block; font-size: xx-large; color: darkgreen;">5</span>
+                        </div>
+                    </div>
+
+                    <div class="uk-width-3-4@s">
+                        <label for="slider3" style="font-weight: bold; font-size: x-large;">What is your level of anger
+                            at this moment? </label>
+                        <input class="uk-input" name="anger_level" type="range" id="slider3" min="0" max="10" step="1"
+                            value="5" required>
+                        <span>Min: </span>
+                        <span class="minValue">0</span>
+                        <span>Max: </span>
+                        <span class="maxValue">10</span>
+                        <div style="text-align: right;">
+                            <span
+                                style="font-weight: bold; display: inline-block; font-size: larger; color: darkgreen;">Current
+                                Anger: </span>
+                            <span class="currentValue"
+                                style="font-weight: bold; display: inline-block; font-size: xx-large; color: darkgreen;">5</span>
+                        </div>
+                    </div>
+
+                    <div class="uk-width-3-4@s">
+                        <label for="slider4" style="font-weight: bold; font-size: x-large;">What is your level of
+                            contempt at this moment? </label>
+                        <input class="uk-input" name="contempt_level" type="range" id="slider4" min="0" max="10"
+                            step="1" value="5" required>
+                        <span>Min: </span>
+                        <span class="minValue">0</span>
+                        <span>Max: </span>
+                        <span class="maxValue">10</span>
+                        <div style="text-align: right;">
+                            <span
+                                style="font-weight: bold; display: inline-block; font-size: larger; color: darkgreen;">Current
+                                Contempt: </span>
+                            <span class="currentValue"
+                                style="font-weight: bold; display: inline-block; font-size: xx-large; color: darkgreen;">5</span>
+                        </div>
+                    </div>
+
+                    <div class="uk-width-3-4@s">
+                        <label for="slider5" style="font-weight: bold; font-size: x-large;">What is your level of
+                            disgust at this moment? </label>
+                        <input class="uk-input" name="disgust_level" type="range" id="slider5" min="0" max="10" step="1"
+                            value="5" required>
+                        <span>Min: </span>
+                        <span class="minValue">0</span>
+                        <span>Max: </span>
+                        <span class="maxValue">10</span>
+                        <div style="text-align: right;">
+                            <span
+                                style="font-weight: bold; display: inline-block; font-size: larger; color: darkgreen;">Current
+                                Disgust: </span>
+                            <span class="currentValue"
+                                style="font-weight: bold; display: inline-block; font-size: xx-large; color: darkgreen;">5</span>
+                        </div>
+                    </div>
+
+                    <div class="uk-width-3-4@s">
+                        <label for="slider6" style="font-weight: bold; font-size: x-large;">What is your level of fear
+                            at this moment? </label>
+                        <input class="uk-input" name="fear_level" type="range" id="slider6" min="0" max="10" step="1"
+                            value="5" required>
+                        <span>Min: </span>
+                        <span class="minValue">0</span>
+                        <span>Max: </span>
+                        <span class="maxValue">10</span>
+                        <div style="text-align: right;">
+                            <span
+                                style="font-weight: bold; display: inline-block; font-size: larger; color: darkgreen;">Current
+                                Fear: </span>
+                            <span class="currentValue"
+                                style="font-weight: bold; display: inline-block; font-size: xx-large; color: darkgreen;">5</span>
+                        </div>
+                    </div>
+
+                    <div class="uk-width-3-4@s">
+                        <label for="slider7" style="font-weight: bold; font-size: x-large;">What is your level of
+                            surprise at this moment? </label>
+                        <input class="uk-input" name="surprise_level" type="range" id="slider7" min="0" max="10"
+                            step="1" value="5" required>
+                        <span>Min: </span>
+                        <span class="minValue">0</span>
+                        <span>Max: </span>
+                        <span class="maxValue">10</span>
+                        <div style="text-align: right;">
+                            <span
+                                style="font-weight: bold; display: inline-block; font-size: larger; color: darkgreen;">Current
+                                Surprise: </span>
+                            <span class="currentValue"
+                                style="font-weight: bold; display: inline-block; font-size: xx-large; color: darkgreen;">5</span>
+                        </div>
+                    </div>
+
+
+                    <div class="uk-width-3-4@s">
+                        <label style="font-weight: bold; font-size: x-large;">Choose an optional emotional trigger from
+                            this list (if applicable):</label>
+                        <div>
+                            <input type="checkbox" id="option1" name="listTrigger" value="Social Interaction">
+                            <label for="option1"
+                                style="font-weight: bold; display: inline-block; font-size: x-large; color: red;">Social
+                                Interaction</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="option2" name="listTrigger" value="Physical Activity">
+                            <label for="option2"
+                                style="font-weight: bold; display: inline-block; font-size: x-large; color: orangered;">Physical
+                                Activity</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="option3" name="listTrigger" value="Family">
+                            <label for="option3"
+                                style="font-weight: bold; display: inline-block; font-size: x-large; color: rgb(255, 242, 0);">Family</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="option4" name="listTrigger" value="Sleep">
+                            <label for="option4"
+                                style="font-weight: bold; display: inline-block; font-size: x-large; color: green;">Sleep</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="option5" name="listTrigger" value="Work">
+                            <label for="option5"
+                                style="font-weight: bold; display: inline-block; font-size: x-large; color: blue;">Work</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="option6" name="listTrigger" value="Weather">
+                            <label for="option6"
+                                style="font-weight: bold; display: inline-block; font-size: x-large; color: purple;">Weather</label>
+                        </div>
+                    </div>
+
+
+                    <div class="uk-width-3-4@s">
+                        <input class="uk-input" name="contextual_trigger" type="text"
+                            placeholder="Please enter any other contextual triggers/thoughts for the day (optional)..."
+                            optional>
+                    </div>
+
+                    <div class="uk-width-1-4@s">
+                        <input class="uk-input" name="new_date" type="datetime-local" required>
+                    </div>
+
+
+                    <div class="uk-width-auto" style="margin-bottom: 20px;">
+                        <div uk-form-custom>
+                            <button class="uk-button uk-button-default uk-button-large" uk-icon="icon: happy"
+                                style="background-color: #ffffcc; border: 3px solid #000; font-weight: bold;">ADD
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <script>
+            // Get all slider elements
+            const sliders = document.querySelectorAll('input[type="range"]');
+
+            // Add event listener for each slider
+            sliders.forEach(slider => {
+                // Get elements related to this slider
+                const parentDiv = slider.parentElement;
+                const minValue = parentDiv.querySelector('.minValue');
+                const maxValue = parentDiv.querySelector('.maxValue');
+                const currentValue = parentDiv.querySelector('.currentValue');
+
+                // Update values on input change
+                slider.addEventListener('input', function () {
+                    currentValue.textContent = this.value;
+                });
+
+                // Initial update of min and max values
+                minValue.textContent = slider.min;
+                maxValue.textContent = slider.max;
+            });
+
+        </script>
+
+</body>
+
+</html>

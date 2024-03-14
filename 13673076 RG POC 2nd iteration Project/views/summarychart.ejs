@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Tracking</title>
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/css/uikit.min.css" />
+    <!-- UIkit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/js/uikit-icons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"
+        integrity="sha512-ZwR1/gSZM3ai6vCdI+LVF1zSq/5HznD3ZSTk7kajkaj4D292NLuduDCO1c/NT8Id+jE58KYLKT7hXnbtryGmMg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<style>
+
+</style>
+
+<body>
+
+    <div class="uk-section">
+        <h1 class="uk-text-bold uk-heading-large uk-flex-center uk-align-center" style="text-align: center;">EMOTION
+            SNAPSHOT</h1>
+        <div class="uk-height-medium uk-height-max-large uk-flex uk-flex-center uk-flex-middle uk-background-cover uk-dark uk-contain"
+            data-src="./imgs/vecteezy_emoticon-emotion-icon-vector-line-on-white-background-image_3756149.jpg" uk-img>
+        </div>
+
+        <style>
+            .uk-navbar-container {
+                width: 100vw;
+                /* Set the width to 100% of the viewport width */
+                position: relative;
+                /* Ensure the navbar stays within the viewport */
+                background-color: rgba(144, 238, 144, 0.2);
+                /* Light green with 50% opacity */
+            }
+        </style>
+
+        <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar style="padding-left: 60px;">
+            <div class="uk-navbar-left">
+                <ul class="uk-navbar-nav">
+                    <li class="uk-active"><a href="/" style="font-size: 20px; font-weight: bold;">Return to Homepage</a>
+                    </li>
+                    <li class="uk-parent"><a href="/new" style="font-size: 20px; font-weight: bold;">Add New Snapshot
+                        </a></li>
+                </ul>
+            </div>
+            <div class="uk-navbar-right" uk-navbar style="padding-left: 60px; padding-right: 120px;">
+                <ul class="uk-navbar-nav">
+                    <li class="uk-parent"><a href="/userdetails" style="font-size: 20px; font-weight: bold;">Update Details</a> </li>
+                    <li class="uk-parent"><a href="/logout" style="font-size: 20px; font-weight: bold;">Logout</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="uk-section uk-background-muted">
+            <div class="uk-container">
+
+                <h2 class="uk-heading-small uk-text-left"> Emotion Snapshots Over Time </h2>
+
+                <div class="uk-container chart-container uk-flex uk-flex-center" style="height: 600px;">
+                    <!-- Date filter form -->
+                    <form id="dateFilterForm">
+                    <label for="startDate">Start Date:</label>
+                    <input type="date" id="startDate" name="startDate">
+            
+                    <label for="endDate">End Date:</label>
+                    <input type="date" id="endDate" name="endDate">
+            
+                    <button type="submit">Apply Filter</button>
+                </form>
+                
+                    <!-- Chart canvas -->
+                    <canvas id="summaryChart"></canvas>
+                
+                    <script>
+                        // Retrieve snapshotData passed from the server-side
+                        const snapshotData = `<%- JSON.stringify(snapshotData) %>`;
+                        const snapshotInfo = JSON.parse(snapshotData);
+                
+                       // Extract snapshot dates and emotion levels
+                    const snapshotDates = Object.keys(snapshotInfo);
+                        // Function to format dates consistently for sorting
+                        function formatDateForSorting(dateString) {
+                            const date = new Date(dateString);
+                            return date.toISOString();
+                        }
+
+                        // Sort the dates in ascending order
+                        snapshotDates.sort((a, b) => {
+                            return new Date(formatDateForSorting(a)) - new Date(formatDateForSorting(b));
+                        });
+                        const emotions = Object.keys(snapshotInfo[snapshotDates[0]]);
+
+                        // Initialize datasets array to store emotion datasets
+                        const datasets = [];
+
+                        // Loop through each emotion and construct its dataset
+                        emotions.forEach(emotion => {
+                            const data = snapshotDates.map(date => {
+                                const levels = snapshotInfo[date][emotion];
+                                // Calculate average emotion level for the current date
+                                const averageLevel = levels.reduce((sum, level) => sum + level, 0) / levels.length;
+                                return averageLevel;
+                            });
+
+                            // Construct dataset object for the current emotion
+                            datasets.push({
+                                label: emotion.charAt(0).toUpperCase() + emotion.slice(1), // Capitalize emotion name
+                                data: data,
+                                borderColor: getRandomColor(), // Generate random color for each emotion
+                                borderWidth: 3,
+                                fill: false
+                            });
+                        });
+
+                        // Function to format dates
+                        function formatDate(dateString) {
+                            const date = new Date(dateString);
+                            const day = date.getDate().toString().padStart(2, '0');
+                            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                            const year = date.getFullYear().toString().slice(-2);
+                            const hours = date.getHours().toString().padStart(2, '0');
+                            const minutes = date.getMinutes().toString().padStart(2, '0');
+
+                            const formattedDate = `${day}/${month}/${year} ${hours}:${minutes}`;
+                            return formattedDate;
+                        }
+                        // Create chart data object
+                        const chartData = {
+                            labels: snapshotDates.map(date => formatDate(date)),
+                            datasets: datasets
+                        };
+                
+                
+                        // Define chart configuration
+                        const chartConfig = {
+                            type: 'line',
+                            data: chartData,
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        ticks: {
+                                            min: 0,    // Set the minimum value for the y-axis
+                                            max: 10,   // Set the maximum value for the y-axis
+                                            stepSize: 1,
+                                        }
+                                    },
+                                },
+                                plugins: {
+                                    title: {
+                                        display: false,
+                                        text: 'Emotion Tracking Over Time',
+                                        fontSize: 50
+                                    }
+                                }
+                            }
+                        };
+                
+                        // Create new Chart instance
+                        const ctx = document.getElementById('summaryChart').getContext('2d');
+                        const chart = new Chart(ctx, chartConfig);
+                
+                        // Function to generate random color
+                        function getRandomColor() {
+                            return 'rgb(' + Math.floor(Math.random() * 256) + ','
+                                + Math.floor(Math.random() * 256) + ','
+                                + Math.floor(Math.random() * 256) + ')';
+                        }
+                
+                        // Date filter form submission event listener
+                        document.getElementById('dateFilterForm').addEventListener('submit', function(event) {
+                            event.preventDefault(); // Prevent form submission
+                            const startDate = document.getElementById('startDate').value;
+                            const endDate = document.getElementById('endDate').value;
+                            // Redirect to the same page with query parameters for filtering
+                            window.location.href = `/summaryChart?startDate=${startDate}&endDate=${endDate}`;
+                        });
+                    </script>
+                </div>
+                
+                </div>
+            </div>
+        </div>
+
+        <div class="uk-section uk-background-muted">
+            <div class="uk-container">
+                <h2 class="uk-heading-small uk-text-left"> Total Contextual Trigger Counts </h2>
+
+                <div class="uk-container chart-container uk-flex uk-flex-center">
+                    <canvas id="contextualTriggersChart"></canvas>
+
+                    <script>
+                        // Pass the server-side data to the client as a JavaScript variable
+                        const contextualTriggerCounts = `<%- JSON.stringify(counts) %>`;
+                        const newdata = JSON.parse(contextualTriggerCounts);
+
+                        // Function to render the bar chart
+                        const barData = {
+                            labels: ['Social Interaction', 'Physical Activity', 'Family', 'Work', 'Sleep', 'Weather'],
+                            datasets: [{
+                                label: 'Total Contextual Trigger Counts For Snapshots',
+                                backgroundColor: getRandomColor(),
+                                borderColor: getRandomColor(),
+                                borderWidth: 3,
+                                // Use the server-side data in the chart
+                                data: newdata
+                            }]
+                        };
+
+                        const barConfig = {
+                            type: 'bar',
+                            data: barData,
+                            options: {
+                                scales: {
+                                    y: {
+                                        ticks: {
+                                            beginAtZero: true,   // Set the maximum value for the y-axis
+                                            stepSize: 1,
+                                        }
+                                    }
+                                }
+                            }
+                        };
+
+                        // Get the canvas element
+                        const btx = document.getElementById('contextualTriggersChart').getContext('2d');
+
+                        // Create the bar chart
+                        new Chart(btx, barConfig);
+
+                        function getRandomColor() {
+                            return 'rgba(' + Math.floor(Math.random() * 256) + ',' +
+                                Math.floor(Math.random() * 256) + ',' +
+                                Math.floor(Math.random() * 256) + ',' +
+                                0.5 + ')'; // Change the alpha value (0.5) for transparency
+                        }
+                    </script>
+                </div>
+            </div>
+        </div>
+
+</body>
+
+</html>

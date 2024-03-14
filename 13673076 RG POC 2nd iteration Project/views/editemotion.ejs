@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Tracking</title>
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/css/uikit.min.css" />
+    <!-- UIkit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/js/uikit-icons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"
+        integrity="sha512-ZwR1/gSZM3ai6vCdI+LVF1zSq/5HznD3ZSTk7kajkaj4D292NLuduDCO1c/NT8Id+jE58KYLKT7hXnbtryGmMg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+
+<body>
+    <div class="uk-section">
+        <h1 class="uk-text-bold uk-heading-large uk-flex-center uk-align-center" style="text-align: center;">EMOTION
+            SNAPSHOT</h1>
+        <div class="uk-height-medium uk-height-max-large uk-flex uk-flex-center uk-flex-middle uk-background-cover uk-dark uk-contain"
+            data-src="../imgs/vecteezy_emoticon-emotion-icon-vector-line-on-white-background-image_3756149.jpg" uk-img>
+        </div>
+
+        <style>
+            .uk-navbar-container {
+                width: 100vw;
+                /* Set the width to 100% of the viewport width */
+                position: relative;
+                /* Ensure the navbar stays within the viewport */
+                background-color: rgba(144, 238, 144, 0.2);
+                /* Light green with 50% opacity */
+            }
+        </style>
+
+        <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar style="padding-left: 60px;">
+            <div class="uk-navbar-left">
+                <ul class="uk-navbar-nav">
+                    <li class="uk-parent"><a href="/" style="font-size: 20px; font-weight: bold;">Return to Homepage</a>
+                    </li>
+                    <li class="uk-parent"><a href="/summarychart" style="font-size: 20px; font-weight: bold;">Visual
+                            Summary</a></li>
+                    <li class="uk-parent"><a href="/new" style="font-size: 20px; font-weight: bold;">Add New Snapshot
+                        </a></li>
+                </ul>
+            </div>
+            <div class="uk-navbar-right" uk-navbar style="padding-left: 60px; padding-right: 120px;">
+                <ul class="uk-navbar-nav">
+                    <li class="uk-parent"><a href="/userdetails" style="font-size: 20px; font-weight: bold;">Update Details</a> </li>
+                    <li class="uk-parent"><a href="/logout" style="font-size: 20px; font-weight: bold;">Logout</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="uk-section uk-background-muted">
+            <div class="uk-container">
+                <% for (let row of summary) { %>
+                    <% var summaryid=row.emotion_snapshot_id; %>
+                        <% var summaryenjoyment=row.enjoyment_level; %>
+                            <% var summarysadness=row.sadness_level; %>
+                                <% var summaryanger=row.anger_level; %>
+                                    <% var summarycontempt=row.contempt_level; %>
+                                        <% var summarydisgust=row.disgust_level;%>
+                                            <% var summaryfear=row.fear_level; %>
+                                                <% var summarysurprise=row.surprise_level; %>
+                                                    <% var contextualtrigger=row.contextual_trigger; %>
+                                                        <% var summarydate=row.timestamp;%>
+                                                            <% const dateformat={ weekday: 'long' , year: 'numeric' ,
+                                                                month: 'long' , day: 'numeric' , hour: 'numeric' ,
+                                                                minute: 'numeric' }; %>
+                                                                <% var rawdate=new Date(row.timestamp); %>
+                                                                    <% var itemdate=new Intl.DateTimeFormat('en-GB',
+                                                                        dateformat).format(rawdate); %>
+                                                                        <% var formattedDate=new Date(rawdate);
+                                                                            formattedDate.setHours(formattedDate.getHours()
+                                                                            + 1);
+                                                                            formattedDate=formattedDate.toISOString().slice(0,
+                                                                            16); %>
+                                                                            <% } %>
+
+                                                                                <h2
+                                                                                    class="uk-heading-small uk-text-left">
+                                                                                    Snapshot <%= itemdate %>
+                                                                                </h2>
+                                                                                <div class="uk-container chart-container"
+                                                                                    style="max-width: 600px; margin: auto;">
+                                                                                    <canvas id="snapshotChart"></canvas>
+                                                                                    <script>
+                                                                                        // Function to initialize and update radar chart
+                                                                                        function initRadarChart() {
+                                                                                            // Get the canvas element
+                                                                                            const ctx = document.getElementById('snapshotChart').getContext('2d');
+
+                                                                                            // Define radar chart data
+                                                                                            const data = {
+                                                                                                labels: ['Enjoyment', 'Sadness', 'Anger', 'Contempt', 'Disgust', 'Fear', 'Surprise'],
+                                                                                                datasets: [{
+                                                                                                    label: 'Emotion Levels',
+                                                                                                    data: ["<%= summaryenjoyment %>", "<%= summarysadness %>", "<%= summaryanger %>", "<%= summarycontempt %>", "<%= summarydisgust %>", "<%= summaryfear %>", "<%= summarysurprise %>"],
+                                                                                                    backgroundColor: getRandomColor(),
+                                                                                                    borderColor: getRandomColor(),
+                                                                                                    borderWidth: 3
+                                                                                                }]
+                                                                                            };
+
+                                                                                            // Define radar chart options
+                                                                                            const options = {
+                                                                                                scale: {
+                                                                                                    ticks: {
+                                                                                                        beginAtZero: true,
+                                                                                                        max: 10.00// Set maximum value for the scale
+                                                                                                    }
+                                                                                                }
+                                                                                            };
+
+                                                                                            // Create radar chart
+                                                                                            const myRadarChart = new Chart(ctx, {
+                                                                                                type: 'radar',
+                                                                                                data: data,
+                                                                                                options: options
+                                                                                            });
+                                                                                        }
+                                                                                        function getRandomColor() {
+                                                                                            return 'rgba(' + Math.floor(Math.random() * 256) + ',' +
+                                                                                                Math.floor(Math.random() * 256) + ',' +
+                                                                                                Math.floor(Math.random() * 256) + ',' +
+                                                                                                0.5 + ')'; // Change the alpha value (0.5) for transparency
+                                                                                        }
+                                                                                        // Call the function to initialize and update radar chart
+                                                                                        initRadarChart();
+                                                                                    </script>
+                                                                                </div>
+
+
+
+                                                                                <div
+                                                                                    class="uk-section uk-background-muted">
+                                                                                    <div class="uk-container">
+                                                                                        <h2
+                                                                                            class="uk-heading-small uk-text-left">
+                                                                                            Update snapshot
+                                                                                            (edit/delete) </h2>
+                                                                                        <form method="post"
+                                                                                            action="/edit/<%= summaryid %>"
+                                                                                            class="uk-grid-small"
+                                                                                            uk-grid>
+
+                                                                                            <style>
+                                                                                                .uk-grid-small {
+                                                                                                    font-size: large;
+                                                                                                    position: relative;
+                                                                                                    /* Ensure the navbar stays within the viewport */
+                                                                                                    background-color: rgba(0, 160, 0, 0.2);
+                                                                                                    /* Light green with 20% opacity */
+                                                                                                }
+                                                                                            </style>
+
+                                                                                            <form method="post"
+                                                                                                action="/new/"
+                                                                                                class="uk-grid-small"
+                                                                                                uk-grid>
+
+                                                                                                <div class="uk-width-3-4@s"
+                                                                                                    style="margin-top: 40px;">
+                                                                                                    <label for="slider1"
+                                                                                                        style="font-weight: bold; font-size: x-large;">What
+                                                                                                        is your level of
+                                                                                                        enjoyment at
+                                                                                                        this moment?
+                                                                                                    </label>
+                                                                                                    <input
+                                                                                                        class="uk-input"
+                                                                                                        name="enjoyment_level"
+                                                                                                        type="range"
+                                                                                                        id="slider1"
+                                                                                                        min="0" max="10"
+                                                                                                        step="1"
+                                                                                                        value="<%= summaryenjoyment %>"
+                                                                                                        required>
+                                                                                                    <span>Min: </span>
+                                                                                                    <span
+                                                                                                        class="minValue">0</span>
+                                                                                                    <span>Max: </span>
+                                                                                                    <span
+                                                                                                        class="maxValue">10</span>
+                                                                                                    <div
+                                                                                                        style="text-align: right;">
+                                                                                                        <span
+                                                                                                            style="font-weight: bold; display: inline-block; font-size: larger; color: darkgreen;">Current
+                                                                                                            Enjoyment:
+                                                                                                        </span>
+                                                                                                        <span
+                                                                                                            class="currentValue"
+                                                                                                            style="font-weight: bold; display: inline-block; font-size: xx-large; color: darkgreen;">
+                                                                                                            <%= summaryenjoyment
+                                                                                                                %>
+                                                                                                        </span>
+                                                                                                    </div>
+                                                                                                </div>
+
+
+
+
+                                                                                                <div
+                                                                                                    class="uk-width-3-4@s">
+                                                                                                    <label for="slider2"
+                                                                                                        style="font-weight: bold; font-size: x-large;">What
+                                                                                                        is your level of
+                                                                                                        sadness at this
+                                                                                                        moment? </label>
+                                                                                                    <input
+                                                                                                        class="uk-input"
+                                                                                                        name="sadness_level"
+                                                                                                        type="range"
+                                                                                                        id="slider2"
+                                                                                                        min="0" max="10"
+                                                                                                        step="1"
+                                                                                                        value="<%= summarysadness %>"
+                                                                                                        required>
+                                                                                                    <span>Min: </span>
+                                                                                                    <span
+                                                                                                        class="minValue">0</span>
+                                                                                                    <span>Max: </span>
+                                                                                                    <span
+                                                                                                        class="maxValue">10</span>
+                                                                                                    <div
+                                                                                                        style="text-align: right;">
+                                                                                                        <span
+                                                                                                            style="font-weight: bold; display: inline-block; font-size: larger; color: darkgreen;">Current
+                                                                                                            Sadness:
+                                                                                                        </span>
+                                                                                                        <span
+                                                                                                            class="currentValue"
+                                                                                                            style="font-weight: bold; display: inline-block; font-size: xx-large; color: darkgreen;">
+                                                                                                            <%= summarysadness
+                                                                                                                %>
+                                                                                                        </span>
+                                                                                                    </div>
+                                                                                                </div>
+
+                                                                                                <div
+                                                                                                    class="uk-width-3-4@s">
+                                                                                                    <label for="slider3"
+                                                                                                        style="font-weight: bold; font-size: x-large;">What
+                                                                                                        is your level of
+                                                                                                        anger at this
+                                                                                                        moment? </label>
+                                                                                                    <input
+                                                                                                        class="uk-input"
+                                                                                                        name="anger_level"
+                                                                                                        type="range"
+                                                                                                        id="slider3"
+                                                                                                        min="0" max="10"
+                                                                                                        step="1"
+                                                                                                        value="<%= summaryanger %>"
+                                                                                                        required>
+                                                                                                    <span>Min: </span>
+                                                                                                    <span
+                                                                                                        class="minValue">0</span>
+                                                                                                    <span>Max: </span>
+                                                                                                    <span
+                                                                                                        class="maxValue">10</span>
+                                                                                                    <div
+                                                                                                        style="text-align: right;">
+                                                                                                        <span
+                                                                                                            style="font-weight: bold; display: inline-block; font-size: larger; color: darkgreen;">Current
+                                                                                                            Anger:
+                                                                                                        </span>
+                                                                                                        <span
+                                                                                                            class="currentValue"
+                                                                                                            style="font-weight: bold; display: inline-block; font-size: xx-large; color: darkgreen;">
+                                                                                                            <%= summaryanger
+                                                                                                                %>
+                                                                                                        </span>
+                                                                                                    </div>
+                                                                                                </div>
+
+                                                                                                <div
+                                                                                                    class="uk-width-3-4@s">
+                                                                                                    <label for="slider4"
+                                                                                                        style="font-weight: bold; font-size: x-large;">What
+                                                                                                        is your level of
+                                                                                                        contempt at this
+                                                                                                        moment? </label>
+                                                                                                    <input
+                                                                                                        class="uk-input"
+                                                                                                        name="contempt_level"
+                                                                                                        type="range"
+                                                                                                        id="slider4"
+                                                                                                        min="0" max="10"
+                                                                                                        step="1"
+                                                                                                        value="<%= summarycontempt %>"
+                                                                                                        required>
+                                                                                                    <span>Min: </span>
+                                                                                                    <span
+                                                                                                        class="minValue">0</span>
+                                                                                                    <span>Max: </span>
+                                                                                                    <span
+                                                                                                        class="maxValue">10</span>
+                                                                                                    <div
+                                                                                                        style="text-align: right;">
+                                                                                                        <span
+                                                                                                            style="font-weight: bold; display: inline-block; font-size: larger; color: darkgreen;">Current
+                                                                                                            Contempt:
+                                                                                                        </span>
+                                                                                                        <span
+                                                                                                            class="currentValue"
+                                                                                                            style="font-weight: bold; display: inline-block; font-size: xx-large; color: darkgreen;">
+                                                                                                            <%= summarycontempt
+                                                                                                                %>
+                                                                                                        </span>
+                                                                                                    </div>
+                                                                                                </div>
+
+                                                                                                <div
+                                                                                                    class="uk-width-3-4@s">
+                                                                                                    <label for="slider5"
+                                                                                                        style="font-weight: bold; font-size: x-large;">What
+                                                                                                        is your level of
+                                                                                                        disgust at this
+                                                                                                        moment? </label>
+                                                                                                    <input
+                                                                                                        class="uk-input"
+                                                                                                        name="disgust_level"
+                                                                                                        type="range"
+                                                                                                        id="slider5"
+                                                                                                        min="0" max="10"
+                                                                                                        step="1"
+                                                                                                        value="<%= summarydisgust %>"
+                                                                                                        required>
+                                                                                                    <span>Min: </span>
+                                                                                                    <span
+                                                                                                        class="minValue">0</span>
+                                                                                                    <span>Max: </span>
+                                                                                                    <span
+                                                                                                        class="maxValue">10</span>
+                                                                                                    <div
+                                                                                                        style="text-align: right;">
+                                                                                                        <span
+                                                                                                            style="font-weight: bold; display: inline-block; font-size: larger; color: darkgreen;">Current
+                                                                                                            Disgust:
+                                                                                                        </span>
+                                                                                                        <span
+                                                                                                            class="currentValue"
+                                                                                                            style="font-weight: bold; display: inline-block; font-size: xx-large; color: darkgreen;">
+                                                                                                            <%= summarydisgust
+                                                                                                                %>
+                                                                                                        </span>
+                                                                                                    </div>
+                                                                                                </div>
+
+                                                                                                <div
+                                                                                                    class="uk-width-3-4@s">
+                                                                                                    <label for="slider6"
+                                                                                                        style="font-weight: bold; font-size: x-large;">What
+                                                                                                        is your level of
+                                                                                                        fear at this
+                                                                                                        moment? </label>
+                                                                                                    <input
+                                                                                                        class="uk-input"
+                                                                                                        name="fear_level"
+                                                                                                        type="range"
+                                                                                                        id="slider6"
+                                                                                                        min="0" max="10"
+                                                                                                        step="1"
+                                                                                                        value="<%= summaryfear %>"
+                                                                                                        required>
+                                                                                                    <span>Min: </span>
+                                                                                                    <span
+                                                                                                        class="minValue">0</span>
+                                                                                                    <span>Max: </span>
+                                                                                                    <span
+                                                                                                        class="maxValue">10</span>
+                                                                                                    <div
+                                                                                                        style="text-align: right;">
+                                                                                                        <span
+                                                                                                            style="font-weight: bold; display: inline-block; font-size: larger; color: darkgreen;">Current
+                                                                                                            Fear:
+                                                                                                        </span>
+                                                                                                        <span
+                                                                                                            class="currentValue"
+                                                                                                            style="font-weight: bold; display: inline-block; font-size: xx-large; color: darkgreen;">
+                                                                                                            <%= summaryfear
+                                                                                                                %>
+                                                                                                        </span>
+                                                                                                    </div>
+                                                                                                </div>
+
+                                                                                                <div
+                                                                                                    class="uk-width-3-4@s">
+                                                                                                    <label for="slider7"
+                                                                                                        style="font-weight: bold; font-size: x-large;">What
+                                                                                                        is your level of
+                                                                                                        surprise at this
+                                                                                                        moment? </label>
+                                                                                                    <input
+                                                                                                        class="uk-input"
+                                                                                                        name="surprise_level"
+                                                                                                        type="range"
+                                                                                                        id="slider7"
+                                                                                                        min="0" max="10"
+                                                                                                        step="1"
+                                                                                                        value="<%= summarysurprise %>"
+                                                                                                        required>
+                                                                                                    <span>Min: </span>
+                                                                                                    <span
+                                                                                                        class="minValue">0</span>
+                                                                                                    <span>Max: </span>
+                                                                                                    <span
+                                                                                                        class="maxValue">10</span>
+                                                                                                    <div
+                                                                                                        style="text-align: right;">
+                                                                                                        <span
+                                                                                                            style="font-weight: bold; display: inline-block; font-size: larger; color: darkgreen;">Current
+                                                                                                            Surprise:
+                                                                                                        </span>
+                                                                                                        <span
+                                                                                                            class="currentValue"
+                                                                                                            style="font-weight: bold; display: inline-block; font-size: xx-large; color: darkgreen;">
+                                                                                                            <%= summarysurprise
+                                                                                                                %>
+                                                                                                        </span>
+                                                                                                    </div>
+                                                                                                </div>
+
+
+                                                                                                <div
+                                                                                                    class="uk-width-3-4@s">
+                                                                                                    <label
+                                                                                                        style="font-weight: bold; font-size: x-large;">Choose
+                                                                                                        an optional
+                                                                                                        emotional
+                                                                                                        trigger from
+                                                                                                        this list (if
+                                                                                                        applicable):</label>
+                                                                                                    <div>
+                                                                                                        <input
+                                                                                                            type="checkbox"
+                                                                                                            id="option1"
+                                                                                                            name="listTrigger"
+                                                                                                            value="Social Interaction">
+                                                                                                        <label
+                                                                                                            for="option1"
+                                                                                                            style="font-weight: bold; display: inline-block; font-size: x-large; color: red;">Social
+                                                                                                            Interaction</label>
+                                                                                                    </div>
+                                                                                                    <div>
+                                                                                                        <input
+                                                                                                            type="checkbox"
+                                                                                                            id="option2"
+                                                                                                            name="listTrigger"
+                                                                                                            value="Physical Activity">
+                                                                                                        <label
+                                                                                                            for="option2"
+                                                                                                            style="font-weight: bold; display: inline-block; font-size: x-large; color: orangered;">Physical
+                                                                                                            Activity</label>
+                                                                                                    </div>
+                                                                                                    <div>
+                                                                                                        <input
+                                                                                                            type="checkbox"
+                                                                                                            id="option3"
+                                                                                                            name="listTrigger"
+                                                                                                            value="Family">
+                                                                                                        <label
+                                                                                                            for="option3"
+                                                                                                            style="font-weight: bold; display: inline-block; font-size: x-large; color: rgb(255, 242, 0);">Family</label>
+                                                                                                    </div>
+                                                                                                    <div>
+                                                                                                        <input
+                                                                                                            type="checkbox"
+                                                                                                            id="option4"
+                                                                                                            name="listTrigger"
+                                                                                                            value="Sleep">
+                                                                                                        <label
+                                                                                                            for="option4"
+                                                                                                            style="font-weight: bold; display: inline-block; font-size: x-large; color: green;">Sleep</label>
+                                                                                                    </div>
+                                                                                                    <div>
+                                                                                                        <input
+                                                                                                            type="checkbox"
+                                                                                                            id="option5"
+                                                                                                            name="listTrigger"
+                                                                                                            value="Work">
+                                                                                                        <label
+                                                                                                            for="option5"
+                                                                                                            style="font-weight: bold; display: inline-block; font-size: x-large; color: blue;">Work</label>
+                                                                                                    </div>
+                                                                                                    <div>
+                                                                                                        <input
+                                                                                                            type="checkbox"
+                                                                                                            id="option6"
+                                                                                                            name="listTrigger"
+                                                                                                            value="Weather">
+                                                                                                        <label
+                                                                                                            for="option6"
+                                                                                                            style="font-weight: bold; display: inline-block; font-size: x-large; color: purple;">Weather</label>
+                                                                                                    </div>
+                                                                                                </div>
+
+                                                                                                <div
+                                                                                                    class="uk-width-3-4@s">
+                                                                                                    <input
+                                                                                                        class="uk-input"
+                                                                                                        name="contextual_trigger"
+                                                                                                        type="text"
+                                                                                                        value="<%= contextualtrigger %>"
+                                                                                                        placeholder="Please enter any contextual triggers/thoughts for the day (optional)..."
+                                                                                                        optional>
+                                                                                                </div>
+
+                                                                                                <div
+                                                                                                    class="uk-width-1-4@s">
+                                                                                                    <input
+                                                                                                        class="uk-input"
+                                                                                                        name="new_date"
+                                                                                                        type="datetime-local"
+                                                                                                        value="<%= formattedDate %>"
+                                                                                                        required>
+                                                                                                </div>
+
+
+                                                                                                <div class="uk-width-auto"
+                                                                                                    style="margin-bottom: 20px;">
+                                                                                                    <div uk-form-custom>
+                                                                                                        <button
+                                                                                                            class="uk-button uk-button-default uk-button-large"
+                                                                                                            uk-icon="icon: happy"
+                                                                                                            style="background-color: #ffffcc; border: 3px solid #000; font-weight: bold;">UPDATE
+                                                                                                        </button>
+                                                                                                    </div>
+
+                                                                                                    <div uk-form-custom>
+                                                                                                        <button
+                                                                                                            class="uk-button uk-button-default uk-button-large"
+                                                                                                            uk-icon="icon: trash"
+                                                                                                            style="background-color: red; border: 3px solid #000; font-weight: bold;"
+                                                                                                            formaction="/del/<%= summaryid %>">DELETE
+                                                                                                        </button>
+                                                                                                    </div>
+                                                                                                </div>
+
+                                                                                            </form>
+
+                                                                                    </div>
+                                                                                </div>
+
+                                                                                <script>
+                                                                                    // Get all slider elements
+                                                                                    const sliders = document.querySelectorAll('input[type="range"]');
+
+                                                                                    // Add event listener for each slider
+                                                                                    sliders.forEach(slider => {
+                                                                                        // Get elements related to this slider
+                                                                                        const parentDiv = slider.parentElement;
+                                                                                        const minValue = parentDiv.querySelector('.minValue');
+                                                                                        const maxValue = parentDiv.querySelector('.maxValue');
+                                                                                        const currentValue = parentDiv.querySelector('.currentValue');
+
+                                                                                        // Update values on input change
+                                                                                        slider.addEventListener('input', function () {
+                                                                                            currentValue.textContent = this.value;
+                                                                                        });
+
+                                                                                        // Initial update of min and max values
+                                                                                        minValue.textContent = slider.min;
+                                                                                        maxValue.textContent = slider.max;
+                                                                                    });
+
+                                                                                </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Tracking - Update Details</title>
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/css/uikit.min.css" />
+    <!-- UIkit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/js/uikit-icons.min.js"></script>
+    <!-- JQuery CDN-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+    <div class="uk-section">
+        <h1 class="uk-text-bold uk-heading-large uk-flex-center uk-align-center" style="text-align: center;">EMOTION SNAPSHOT</h1>
+        <div class="uk-height-medium uk-height-max-large uk-flex uk-flex-center uk-flex-middle uk-background-cover uk-dark uk-contain" data-src="../imgs/vecteezy_emoticon-emotion-icon-vector-line-on-white-background-image_3756149.jpg" uk-img></div>
+        <style>
+            .uk-navbar-container {
+                width: 100vw;
+                /* Set the width to 100% of the viewport width */
+                position: relative;
+                /* Ensure the navbar stays within the viewport */
+                background-color: rgba(144, 238, 144, 0.2);
+                /* Light green with 50% opacity */
+            }
+        </style>
+        <nav class="uk-navbar-container uk-navbar-transparent" uk-navbar style="padding-left: 60px;">
+            <div class="uk-navbar-left">
+                <ul class="uk-navbar-nav">
+                    <li class="uk-parent"><a href="/" style="font-size: 20px; font-weight: bold;">Return to Homepage</a></li>
+                    <li class="uk-parent"><a href="/summarychart" style="font-size: 20px; font-weight: bold;">Visual Summary</a></li>
+                    <li class="uk-parent"><a href="/new" style="font-size: 20px; font-weight: bold;">Add New Snapshot</a></li>
+                </ul>
+            </div>
+            <div class="uk-navbar-right" uk-navbar style="padding-left: 60px; padding-right: 120px;">
+                <ul class="uk-navbar-nav">
+                    <li class="uk-parent"><a href="/logout" style="font-size: 20px; font-weight: bold;">Logout</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="uk-section uk-background-muted">
+            <div class="uk-container">
+                <div class="uk-section">
+                    <h2>Please update your details below:</h2>
+                    <div class="uk-container">
+                        <form method="post" action="/userdetails" class="uk-grid-small" uk-grid>
+                            <% for (let row of summary) { %>
+                                <% var firstname = row.first_name; %>
+                                <% var lastname = row.last_name; %>
+                                <% var username = row.user_name; %>
+                                <div class="uk-width-1-2@s">
+                                    <input class="uk-input" name="firstname" type="text" placeholder="First Name" required value="<%= firstname %>">
+                                </div>
+                                <div class="uk-width-1-2@s">
+                                    <input class="uk-input" name="lastname" type="text" placeholder="Last Name" required value="<%= lastname %>">
+                                </div>
+                                <div class="uk-width-1-2@s">
+                                    <input class="uk-input" name="username" type="text" placeholder="Username (alphanumeric characters only)" required value="<%= username %>" id="username-input" required>
+                                </div>
+                                <div class="uk-width-1-2@s">
+                                    <input class="uk-input" name="userpass" type="password" placeholder="New Password">
+                                </div>
+                                <div class="uk-width-1-4@s">
+                                    <div uk-form-custom>
+                                        <button class="uk-button uk-button-default uk-button-medium" uk-icon="icon: happy" style="background-color: #ffffcc; border: 3px solid #000; font-weight: bold;"> UPDATE DETAILS</button>
+                                    </div>
+                                </div>
+                            <% } %>
+                        </form>
+                        <div class="uk-width-1-2@s">
+                            <span id="message"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <% if (!error) { %>
+        <script>
+            $("form").submit((event) => {
+                const regex = /^[a-zA-Z0-9]+$/;
+                var currentUsername = $('#username-input').val();
+                const msgAlphanumeric = 'Username must be alphanumeric!';
+
+                if (regex.test(currentUsername) == false) {
+                    // Username is not alphanumeric
+                    $('#message').html(msgAlphanumeric).css('color', 'red').show().fadeOut(5000);
+                    event.preventDefault();
+                }
+            });
+        </script>
+        <% } %>
+        
+        <% if (error) { %>
+            <script>
+                const errorMsg = '<%= error %>';
+                $('#message').html(errorMsg)
+                    .css('color', 'red')
+                    .show()
+                    .fadeOut(5000, function() {
+                    window.location.href = '/userdetails';
+                });
+            </script>
+        <% } %>
+
+        <% if (success) { %>
+            <script>
+                const successMsg = '<%= success %>';
+                $('#message').html(successMsg)
+                    .css('color', 'green')
+                    .show()
+                    .fadeOut(5000, function() {
+                        // Redirect to a different URL after the message fades out
+                        window.location.href = '/';
+                    });
+            </script>
+        <% } %>
+    </div>
+</body>
+</html>
+
